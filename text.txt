@@ -1,0 +1,89 @@
+#include<stdio.h>
+#include<stdlib.h>
+#define MAX -324567
+typedef struct tnode
+{
+    int exp;
+    float coeff;
+    struct tnode *next;
+}node;
+node *poly1,*poly2,*poly3,*xpoly;
+node *insert(node *poly,int exp,float coeff);
+node *readpoly(int numterms);
+void printpoly(node *poly);
+int main()
+{
+    node *poly1,*poly2,*poly3;
+    node *head,*head1;
+    int numterms,numterms1;
+    printf("enter the no. of terms of poly1");
+    scanf("%d",&numterms);
+    printf("enter the no. of terms of poly2");
+    scanf("%d",&numterms1);
+   head=readpoly(numterms);
+   head1=readpoly(numterms1);
+   printpoly(head);
+}
+
+node *readpoly(int numterms)
+{
+    node *xpoly,*head;
+    xpoly=NULL;
+    int i=0;
+    int exp;
+    float coeff;
+    while(i<numterms)
+    {
+        printf("\nenter the exp of %d term\n",i);
+        scanf("%d",&exp);
+        printf("\nenter the coeff of %d term\n",i);
+        scanf("%f",&coeff);
+        xpoly=(node *)malloc(2*sizeof(node));
+        xpoly->exp=exp;
+    xpoly->coeff=coeff;
+    xpoly->next=NULL;
+ 
+   head=insert(xpoly,exp,coeff);
+   xpoly=xpoly->next;
+        i++;
+    }
+   return head;
+    
+}
+node *insert(node *poly,int exp,float coeff)
+{
+    int temp,temp1;
+    if(exp>MAX)
+    {
+        MAX==exp;
+        if(poly->next=NULL)
+        {
+            return 0;
+        }
+        else
+        {
+            temp=poly->exp;
+            temp1=poly->coeff;
+            poly->exp=poly->next->exp;
+            poly->coeff=poly->next->coeff;
+            poly->next->exp=temp;
+            poly->next->coeff=temp1;
+            return poly;
+        }
+    }
+    else
+    {
+        return 0;
+    }
+  return poly;  
+}
+void printpoly(node *poly)
+{
+    node *p;
+    p=poly->next;
+    while(p!=NULL)
+    {
+        printf("%f x ^ %d +",p->coeff,p->exp);
+        p=p->next;
+    }
+}

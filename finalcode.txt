@@ -1,0 +1,164 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+typedef struct tpoly
+{
+    int exp;
+    float coeff;
+    struct tpoly *next;
+}poly;
+poly *poly1,*poly2,*poly3;
+poly *insert(poly *poly,int exp,float coeff);
+poly *readpoly(int numterms);
+void printpoly(poly *xpoly);
+float evalpoly(poly *xpoly,float x);
+poly *addpoly(poly *poly1,poly *poly2);
+int main()
+{
+    int numterms,numterms1;
+    float x;
+    printf("enter the no. of terms of poly1:");
+    scanf("%d",&numterms);
+    poly1=readpoly(numterms);
+    printf("enter the no. of terms of poly2:");
+    scanf("%d",&numterms1);
+    poly2=readpoly(numterms1);
+    printf("The two polynomials entered are\n");
+    printpoly(poly1);
+    printpoly(poly2);
+    printf("Enter the value of x:");
+    scanf("%f",&x);
+    printf("Poly1(%f)=%f\n",x,evalpoly(poly1,x));
+    printf("Poly2(%f)=%f\n",x,evalpoly(poly2,x));
+    poly3=addpoly(poly1,poly2);
+    printf("The sum of polynomials is ");
+    printpoly(poly3);
+    printf("Poly3(%f)=%f",x,evalpoly(poly3,x));
+}
+poly *readpoly(int numterms)
+{
+    poly *xpoly=NULL;
+    int i=0;
+    int exp;
+    float coeff;
+    while(i<numterms)
+    {
+        printf("Enter the exp of %d term:",i);
+        scanf("%d",&exp);
+        printf("Enter the coeff of %d term:",i);
+        scanf("%f",&coeff);
+        xpoly=insert(xpoly,exp,coeff);
+        i++;
+    }
+    return xpoly;
+}
+poly *insert(poly *xpoly,int exp,float coeff)
+{
+    poly *dup=(poly *)malloc(sizeof(poly));
+    poly *dup1=xpoly;
+    poly *dup2=xpoly;
+    dup->exp=exp;
+    dup->coeff=coeff;
+    dup->next=NULL;
+    if(xpoly==NULL)
+        xpoly=dup;
+    else if(dup->exp>dup1->exp)
+    {
+        dup->next=dup1;
+        xpoly=dup;
+    }
+    else
+    {
+        dup1=dup1->next;
+        while(dup1!=NULL)
+        {
+            if(dup->exp>dup1->exp)
+            {
+                dup2->next=dup;
+                dup->next=dup1;
+                break;
+            }
+            dup2=dup1;
+            dup1=dup1->next;
+        }
+        if(dup1==NULL)
+            dup2->next=dup;
+    }
+    return xpoly;  
+}
+void printpoly(poly *xpoly)
+{
+    poly *p;
+    p=xpoly;
+    while(p!=NULL)
+    {
+        if(p->exp==0)
+            printf("%f",p->coeff);
+        else
+            printf("%f x ^ %d ",p->coeff,p->exp);
+        p=p->next;
+        if(p!=NULL && p->coeff>0)
+            printf("+");
+    }
+    printf("\n");
+}
+poly *addpoly(poly* poly1,poly *poly2)
+{
+    poly *xpoly=NULL;
+    poly *dup,*dup1;
+    while(poly1!=NULL && poly2!=NULL)
+    {
+        dup=(poly *)malloc(sizeof(poly));
+        if(poly1->exp>poly2->exp)
+        {
+            dup->exp=poly1->exp;
+            dup->coeff=poly1->coeff;
+            dup->next=NULL;
+            poly1=poly1->next;
+        }
+        else if(poly2->exp>poly1->exp)
+        {
+            dup->exp=poly2->exp;
+            dup->coeff=poly2->coeff;
+            dup->next=NULL;
+            poly2=poly2->next;
+        }
+        else if(poly2->exp==poly1->exp)
+        {
+            dup->exp=poly1->exp;
+            dup->coeff=(poly1->coeff+poly2->coeff);
+            dup->next=NULL;
+            poly1=poly1->next;
+            poly2=poly2->next;
+        }
+        if(xpoly==NULL)
+        {
+            xpoly=dup;
+            dup1=xpoly;
+        }
+        else
+        {
+            dup1->next=dup;
+            dup1=dup;
+        }
+    }
+    if(poly1!=NULL)
+    {
+        dup1->next=poly1;
+    }
+    else if(poly2!=NULL)
+    {
+        dup1->next=poly2;  
+    }
+    return(xpoly);
+}
+float evalpoly(poly *xpoly,float x)
+{
+    float value=0;
+    while(xpoly!=NULL)
+    {
+        value=value+(xpoly->coeff*((float)pow(x,xpoly->exp)));
+        xpoly=xpoly->next;
+    }
+    return(value);
+}
